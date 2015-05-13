@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost/naxxserian/app';
+$config['base_url']	= 'http://localhost/CI_bp';
 
 /*
 |--------------------------------------------------------------------------
