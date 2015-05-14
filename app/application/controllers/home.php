@@ -21,21 +21,29 @@ class Home extends CI_Controller
 		$sender = $this->input->post('to');//shot code(sender)
 		$user_message = trim(strtolower($this->input->post('text')));
 
-    $message_from_user = substr($user_message, 0, 5);
+    $keyword = substr($user_message, 0, 5);
     $succeeding_msg = substr($user_message, 5);
 
     $current_date_time = date("Y-m-d H:i:s");
 
+    if ($keyword == "flit ")
+    {
+        #send the user a question
+        $this->receive_sms($phone_number, $succeeding_msg, $current_date_time, $sender);
+      
+    }
+
+    echo "Hello there ;)...";
 
 		
 	}
+  
+  public function receive_sms()
+  {
+
+  }
 
 	public function send_sms()
-	{
-
-	}
-
-	public function receive_sms()
 	{
 
 	}
