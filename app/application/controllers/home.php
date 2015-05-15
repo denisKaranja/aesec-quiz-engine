@@ -8,6 +8,10 @@ class Home extends CI_Controller
 	{
 		parent::__construct();
 
+    #default timezone
+    date_default_timezone_set("Africa/Nairobi");
+
+
 	}
 
 	public function index()
