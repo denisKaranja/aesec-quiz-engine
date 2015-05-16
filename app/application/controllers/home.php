@@ -51,7 +51,7 @@ class Home extends CI_Controller
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
   {
-    $phone_number = "+254725832352";
+    $phone_number = "+25445832352";
     $succeeding_msg = "Denis Mburu";
     # check if user is registered
     if($this->quiz_model->is_user_registered($phone_number))

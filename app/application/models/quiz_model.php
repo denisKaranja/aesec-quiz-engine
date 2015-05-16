@@ -26,8 +26,6 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-
-
 	public function register_user($phone_number, $name)
 	{
 		#	register a user to the quiz game
@@ -51,8 +49,10 @@ class Quiz_model extends CI_Model
 
 			foreach($question->result() as $quiz)
 			{
-				return $quiz->quiz_count;
+				$quiz_id = $quiz->quiz_count;
 			}
+
+			return $this->get_question($quiz_id);
 		}
 		else
 		{
@@ -60,6 +60,24 @@ class Quiz_model extends CI_Model
 		}
 	}
 
+	private function get_question($quiz_number)
+	{
+		#	get the question after user registration
+		#	@params int(quiz_id)
+		#	@return string(question)
+
+		$where_data = array(
+				"quiz_id" => $quiz_number
+			);
+
+		$this->db->select("question");
+		$question = $this->db->get_where("quest_answer", $where_data);
+
+		foreach($question->result() as $key)
+		{
+			return $key->question;
+		}
+	}
 
 
 
