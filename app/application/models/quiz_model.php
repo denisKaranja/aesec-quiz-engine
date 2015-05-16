@@ -147,4 +147,39 @@ class Quiz_model extends CI_Model
 		}
 	}
 
+	public function update_quiz_count($phone_number, $quiz_count)
+	{
+		#	update quiz count and increment the present value by 1
+		# @params string(phone number), int(quiz id)
+		# @return boolean
+
+		$quiz_count += 1;
+
+		$update_data = array(
+				"quiz_count" => $quiz_count
+			);
+
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
+
+		$update_count = $this->db->update("members", $update_data, $where_data);
+
+		if($update_count)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+
+
+
+
+
+
+
 }

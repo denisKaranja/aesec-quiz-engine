@@ -74,7 +74,10 @@ class Home extends CI_Controller
         echo "A->> ".$response."<br>";
 
         # update quiz_count in members table
-        $this->quiz_model->make_changes("members", "quiz_count", $phone_number);
+        $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
+
+        # send next question
+        $next_question = 
       }
       else
       {
