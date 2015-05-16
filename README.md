@@ -1,6 +1,6 @@
-# AIESEC QUIZ ENGINE
+## AIESEC quiz engine
 SMS based quiz game
-#Technology
+## Technology
  * Backend
     * PHP --> CodeIgniter v 2.x
  * Frontend
