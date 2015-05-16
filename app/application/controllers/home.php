@@ -1,4 +1,7 @@
 <?php
+#helper gateway class
+require_once('AfricasTalkingGateway.php');
+error_reporting(E_ALL);
 
 class Home extends CI_Controller
 {
@@ -17,7 +20,7 @@ class Home extends CI_Controller
 	public function index()
 	{
 		# credentials
-		$username = "aiesec";
+		$username = "aisec";
 		$apikey = "63bea0c464119b566dbc6f93246abffdae17216ebbac2e6ef770e58f446a9cb9";
 
 		#details from the user
