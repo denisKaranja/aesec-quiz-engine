@@ -53,7 +53,7 @@ class Home extends CI_Controller
 
     //testers
     $phone_number = "+254714315084";
-    $succeeding_msg = "aiesec";
+    $succeeding_msg = "peace";
 
 
     # check if user is registered
@@ -77,7 +77,8 @@ class Home extends CI_Controller
         $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
 
         # send next question
-        $next_question = 
+        $next_question = $this->quiz_model->get_question($quiz_id + 1);
+        $this->send_sms($phone_number, $next_question, $sender);
       }
       else
       {
