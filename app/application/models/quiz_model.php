@@ -60,7 +60,7 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	private function get_question($quiz_number)
+	public function get_question($quiz_number)
 	{
 		#	get the question after user registration
 		#	@params int(quiz_id)
@@ -79,6 +79,43 @@ class Quiz_model extends CI_Model
 		}
 	}
 
+	public function get_quiz_count($phone_number)
+	{
+		#	get quiz_cout for the member
+		#	@params int(phone numeber)
+		#	@return int(quiz id)
+
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
+
+		$this->db->select("quiz_count");
+		$question = $this->db->get_where("members", $where_data);
+
+		foreach($question->result() as $key)
+		{
+			$quiz_id = $key->quiz_count;
+		}
+
+		return $quiz_id;
+	}
+
+	public function get_db_field($unique_value, $field_name, $table_name)
+	{
+		$where_data = array(
+				$unique_value => $unique_value
+			);
+
+		$this->db->select($field_name);
+		$value = $this->db->get_where($table_name, $where_data);
+
+		foreach($value->result() as $key)
+		{
+			$result = $key->field_name;
+		}
+
+		return $result;
+	}
 
 
 }

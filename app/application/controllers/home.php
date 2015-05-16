@@ -57,7 +57,11 @@ class Home extends CI_Controller
     if($this->quiz_model->is_user_registered($phone_number))
     {
       # registered user
-      echo "You are already registered :) ";
+      $quiz_id = $this->quiz_model->get_quiz_count($phone_number);
+      $question = $this->quiz_model->get_question($quiz_id);
+
+      echo "Already a member :)</br>";
+      echo $question;
     }
     else
     {
