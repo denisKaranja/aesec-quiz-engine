@@ -26,7 +26,7 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function register_user($phone_number, $name)
+	public function register_user($phone_number, $name, $time)
 	{
 		#	register a user to the quiz game
 		#	@params int(phone number), name(string)
@@ -34,7 +34,8 @@ class Quiz_model extends CI_Model
 
 		$insert_data = array(
 				"phone_number" => $phone_number,
-				"name" => $name
+				"name" => $name,
+				"time" => $time
 			);
 
 		if($this->db->insert("members", $insert_data))
@@ -100,10 +101,10 @@ class Quiz_model extends CI_Model
 		return $quiz_id;
 	}
 
-	public function get_db_field($unique_value, $field_name, $table_name)
+	public function get_db_field($unique_field, $unique_value, $field_name, $table_name)
 	{
 		$where_data = array(
-				$unique_value => $unique_value
+				$unique_field => $unique_value
 			);
 
 		$this->db->select($field_name);
@@ -111,11 +112,39 @@ class Quiz_model extends CI_Model
 
 		foreach($value->result() as $key)
 		{
-			$result = $key->field_name;
+			$results = $key->$field_name;
 		}
 
-		return $result;
+		return $results;
 	}
 
+	public function is_answer_correct($quiz_count, $phone_number, $answer)
+	{
+		# check if user answer is correct
+		# @params int(quiz number), int(phone number), string(answer)
+		#	@return 
+
+		$where_data = array(
+				"quiz_id" => $quiz_count
+			);
+
+		$this->db->select("answer");
+		$db_answer = $this->db->get_where("quest_answer", $where_data);
+
+		foreach($db_answer->result() as $key)
+		{
+			$db_answer = $key->answer;
+		}
+
+		if($db_answer == $answer)
+		{
+			#	correct answer
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 }

@@ -16,8 +16,6 @@ class Home extends CI_Controller
 
     # initialize quiz_model
     $this->load->model("quiz_model");
-
-
 	}
 
 	public function index()
@@ -44,15 +42,20 @@ class Home extends CI_Controller
     }
 
     # tester
-    $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);
-
-		
+    $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);	
 	}
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
   {
-    $phone_number = "+25445832352";
-    $succeeding_msg = "Denis Mburu";
+
+    # @params -> gets message from the user i.e 'flit message comes here'
+    # @return -> sends feedback to the user
+
+    //testers
+    $phone_number = "+254714315084";
+    $succeeding_msg = "aiesec";
+
+
     # check if user is registered
     if($this->quiz_model->is_user_registered($phone_number))
     {
@@ -60,25 +63,67 @@ class Home extends CI_Controller
       $quiz_id = $this->quiz_model->get_quiz_count($phone_number);
       $question = $this->quiz_model->get_question($quiz_id);
 
-      echo "Already a member :)</br>";
-      echo $question;
+      echo "You're already registered...<br>";
+      echo "Q-> ".$question."<br>";
+
+      $is_correct = $this->quiz_model->is_answer_correct($quiz_id, $phone_number, $succeeding_msg);
+
+      if($is_correct)
+      {
+        $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "right_response", "quest_answer");
+        echo "A->> ".$response."<br>";
+
+        # update quiz_count in members table
+        $this->quiz_model->make_changes("members", "quiz_count", $phone_number);
+      }
+      else
+      {
+        $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
+        echo "A->> ".$response."<br>";
+      }
+
+      $this->send_sms($phone_number, $question, $sender);
     }
     else
     {
       # register user first
-      $user_registered = $this->quiz_model->register_user($phone_number, strtoupper($succeeding_msg));
+      $user_registered = $this->quiz_model->register_user($phone_number, strtoupper($succeeding_msg), $current_date_time);
 
-      $new_question = $user_registered;
+      $question = $user_registered;
 
-      echo $new_question;
+      echo "You've been registered...<br>";
+      echo "Q-> ".$question."<br>";
+      # send question to user
+      $this->send_sms($phone_number, $question, $sender);
     }
-
-
   }
 
-	public function send_sms()
+	public function send_sms($phone_number, $question, $sender)
 	{
+    # send question to the user using AfricasTalking API
 
+    # credentials
+    $username = "aisec";
+    $apikey = "63bea0c464119b566dbc6f93246abffdae17216ebbac2e6ef770e58f446a9cb9";
+
+
+    // Create a new instance of our awesome gateway class
+    $gateway = new AfricasTalkingGateway($username, $apikey);
+    // Any gateway errors will be captured by our custom Exception class below,
+    // so wrap the call in a try-catch block
+    
+    try
+    {
+      // Thats it, hit send and we'll take care of the rest.
+      
+
+      $results = $gateway->sendMessage($phone_number, $question, $sender);
+        
+    }
+    catch ( AfricasTalkingGatewayException $e )
+    {
+      echo "Encountered an error while sending: ".$e->getMessage();
+    }
 	}
 
 	public function get_question()
