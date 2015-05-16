@@ -14,6 +14,9 @@ class Home extends CI_Controller
     #default timezone
     date_default_timezone_set("Africa/Nairobi");
 
+    # initialize quiz_model
+    $this->load->model("quiz_model");
+
 
 	}
 
@@ -36,17 +39,30 @@ class Home extends CI_Controller
     if ($keyword == "flit ")
     {
         #send the user a question
-        $this->receive_sms($phone_number, $succeeding_msg, $current_date_time, $sender);
+        $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);
       
     }
 
+    $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);
     echo "Hello there ;)...";
 
 		
 	}
   
-  public function receive_sms()
+  public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
   {
+    # check if user is registered
+    if($this->quiz_model->is_user_registered($phone_number))
+    {
+      # registered user
+      echo "He is registered :) ";
+    }
+    else
+    {
+      # register user first
+      echo "User not registered at all :( ";
+    }
+
 
   }
 
