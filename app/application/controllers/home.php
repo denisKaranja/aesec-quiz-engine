@@ -43,24 +43,30 @@ class Home extends CI_Controller
       
     }
 
+    # tester
     $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);
-    echo "Hello there ;)...";
 
 		
 	}
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
   {
+    $phone_number = "+254725832352";
+    $succeeding_msg = "Denis Mburu";
     # check if user is registered
     if($this->quiz_model->is_user_registered($phone_number))
     {
       # registered user
-      echo "He is registered :) ";
+      echo "You are already registered :) ";
     }
     else
     {
       # register user first
-      echo "User not registered at all :( ";
+      $user_registered = $this->quiz_model->register_user($phone_number, strtoupper($succeeding_msg));
+
+      $new_question = $user_registered;
+
+      echo $new_question;
     }
 
 
