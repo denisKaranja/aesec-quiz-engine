@@ -118,25 +118,25 @@ class Quiz_model extends CI_Model
 		return $results;
 	}
 
-	public function is_answer_correct($quiz_count, $phone_number, $answer)
+	public function is_answer_correct($unique_filed, $quiz_count, $phone_number, $user_answer, $field_name, $table)
 	{
 		# check if user answer is correct
 		# @params int(quiz number), int(phone number), string(answer)
 		#	@return 
 
 		$where_data = array(
-				"quiz_id" => $quiz_count
+				$unique_filed => $quiz_count
 			);
 
-		$this->db->select("answer");
-		$db_answer = $this->db->get_where("quest_answer", $where_data);
+		$this->db->select($field_name);
+		$db_answer = $this->db->get_where($table, $where_data);
 
 		foreach($db_answer->result() as $key)
 		{
-			$db_answer = $key->answer;
+			$db_answer = $key->$field_name;
 		}
 
-		if($db_answer == $answer)
+		if($db_answer == $user_answer)
 		{
 			#	correct answer
 			return true;
@@ -198,6 +198,31 @@ class Quiz_model extends CI_Model
 		{
 			return false;
 		}
+	}
+
+	public function reset_probation_status($phone_number)
+	{
+		#	reset the probation status of a user when they answer the redemption quiz
+		#	@params int(phone number)
+		#	@return boolean
+
+		$update_data = array(
+				"first_time_probation" => 0
+			);
+
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
+
+		if($this->db->update("members", $update_data, $where_data))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
 	}
 
 

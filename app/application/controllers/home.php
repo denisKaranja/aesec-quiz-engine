@@ -52,8 +52,8 @@ class Home extends CI_Controller
     # @return -> sends feedback to the user
 
     //testers
-    $phone_number = "+254714315084";
-    $succeeding_msg = "peace";
+    $phone_number = "+254725332343";
+    $succeeding_msg = "aiesec";
 
 
     # check if user is registered
@@ -62,56 +62,120 @@ class Home extends CI_Controller
       # registered user
       $quiz_id = $this->quiz_model->get_quiz_count($phone_number);
       $question = $this->quiz_model->get_question($quiz_id);
+      $pb_status = $this->quiz_model->get_db_field("phone_number", $phone_number, "probation_count", "members");
 
-      echo "You're already registered...<br>";
-      echo "Q-> ".$question."<br>";
-
-      $is_correct = $this->quiz_model->is_answer_correct($quiz_id, $phone_number, $succeeding_msg);
-
-      if($is_correct)
+      if($pb_status <= 2)
       {
-        $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "right_response", "quest_answer");
-        echo "A->> ".$response."<br>";
+        # user answering for the actual quiz
 
-        # update quiz_count in members table
-        $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
+        echo "You're already registered...<br>";
+        echo "Q-> ".$question."<br>";
 
-        # send next question
-        $next_question = $this->quiz_model->get_question($quiz_id + 1);
-        $this->send_sms($phone_number, $next_question, $sender);
-      }
-      else
-      {
-        # update the probation status
-        $pb_count = $this->quiz_model->get_db_field("phone_number", $phone_number, "probation_count", "members");
+        $is_correct = $this->quiz_model->is_answer_correct("quiz_id", $quiz_id, $phone_number, $succeeding_msg, "answer", "quest_answer");
 
-        if($pb_count == 3)
+        if($is_correct)
         {
-          # send user to probatio
-          # send probation question
+          $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "right_response", "quest_answer");
+          echo "A->> ".$response."<br>";
 
-          $pb_question = "You are on probation!\n";
-          $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
+          # update quiz_count in members table
+          $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
 
-          echo "A->> ".$pb_question."<br>";
+          # send next question
+          $next_question = $this->quiz_model->get_question($quiz_id + 1);
 
-          # send user the message
-          $this->send_sms($phone_number, $pb_question, $sender);
+          echo $next_question;
+          $this->send_sms($phone_number, $next_question, $sender);
         }
         else
         {
-          # update probation count for the member
-          $this->quiz_model->update_probation_count($phone_number, $pb_count);
+          # update the probation status
+          $pb_count = $this->quiz_model->get_db_field("phone_number", $phone_number, "probation_count", "members");
 
-           $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
-           echo "A->> ".$response."<br>";
+          if($pb_count == 3)
+          {
+            # send user to probatio
+            # send probation question
 
-           #  re-send the question failed
-           $this->send_sms($phone_number, $question, $sender);
-           echo "A->> ".$question."<br>";
+            $pb_question = "You are on probation!\n";
+            $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
+
+            echo "A->> ".$pb_question."<br>";
+
+            # send user the message
+            $this->send_sms($phone_number, $pb_question, $sender);
+          }
+          else
+          {
+            # update probation count for the member
+            $this->quiz_model->update_probation_count($phone_number, $pb_count);
+
+             $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
+             echo "A->> ".$response."<br>";
+
+             #  re-send the question failed
+             $this->send_sms($phone_number, $question, $sender);
+             echo "A->> ".$question."<br>";
+          }
+
+        }
+      }
+      else
+      {
+        # user answering for the redemption island quiz
+
+        # check if user just got into redepmtion island
+        $pb_checker = $this->quiz_model->get_db_field("phone_number", $phone_number, "first_time_probation", "members");
+
+        if($pb_checker == 1)
+        {
+          # user just got into probation
+          # send user the same question
+          $prob_msg = "You've been put on probation\n\n";
+          $prob_msg .= $question;
+
+          echo $prob_msg;
+
+          $this->send_sms($phone_number, $prob_msg, $sender);
+        }
+        else
+        {
+          # is a 2nd timer i.e he is answering the probation question
+          $is_correct = $this->quiz_model->is_answer_correct("quiz_id", $quiz_id, $phone_number, $succeeding_msg, "probation_answer", "quest_answer");
+
+          if($is_correct)
+          {
+            # got the correct answer
+            # reset redemption status
+
+            $this->quiz_model->update_probation_count($phone_number, -1);
+            $this->quiz_model->reset_probation_status($phone_number);
+
+            # send user the same question
+            $prob_msg = "Probation code is correct :)\n\n";
+            $prob_msg .= $question;
+
+            echo $prob_msg;
+
+            $this->send_sms($phone_number, $prob_msg, $sender);
+          }
+          else
+          {
+            # redemption code wrong -> re-send question
+            $prob_msg = "WRONG probation code!\n\n";
+
+            $prob_msg .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
+
+            echo $prob_msg;
+
+            $this->send_sms($phone_number, $prob_msg, $sender);
+          }
         }
 
+        
       }
+
+      
 
       $this->send_sms($phone_number, $question, $sender);
     }
