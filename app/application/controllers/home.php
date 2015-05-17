@@ -158,7 +158,7 @@ class Home extends CI_Controller
             $this->quiz_model->update_probation_count($phone_number, -1);
             $this->quiz_model->reset_probation_status("phone_number", $phone_number, "probation_count", 0);
             $this->quiz_model->reset_probation_status("phone_number", $phone_number, "first_time_probation", 0);
-            
+
 
             # send user the same question
             $prob_msg = "Probation code is correct :)\n\n";
@@ -182,8 +182,6 @@ class Home extends CI_Controller
         } 
       }
 
-      
-      $this->send_sms($phone_number, $question, $sender);
     }
     else
     {
