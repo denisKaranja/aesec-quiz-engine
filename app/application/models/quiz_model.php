@@ -175,6 +175,30 @@ class Quiz_model extends CI_Model
 		}
 	}
 
+	public function update_probation_count($phone_number, $pb_count)
+	{
+		#	update probation status when the user submits the wrong answer
+		#	@params int(phone number)
+		# @return boolean
+		$pb_count += 1;
+
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
+
+		$update_data = array(
+				"probation_count" => $pb_count
+			);
+
+		if($this->db->update("members", $update_data, $where_data))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 
 

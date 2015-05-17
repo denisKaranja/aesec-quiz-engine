@@ -82,8 +82,35 @@ class Home extends CI_Controller
       }
       else
       {
-        $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
-        echo "A->> ".$response."<br>";
+        # update the probation status
+        $pb_count = $this->quiz_model->get_db_field("phone_number", $phone_number, "probation_count", "members");
+
+        if($pb_count == 3)
+        {
+          # send user to probatio
+          # send probation question
+
+          $pb_question = "You are on probation!\n";
+          $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
+
+          echo "A->> ".$pb_question."<br>";
+
+          # send user the message
+          $this->send_sms($phone_number, $pb_question, $sender);
+        }
+        else
+        {
+          # update probation count for the member
+          $this->quiz_model->update_probation_count($phone_number, $pb_count);
+
+           $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
+           echo "A->> ".$response."<br>";
+
+           #  re-send the question failed
+           $this->send_sms($phone_number, $question, $sender);
+           echo "A->> ".$question."<br>";
+        }
+
       }
 
       $this->send_sms($phone_number, $question, $sender);
