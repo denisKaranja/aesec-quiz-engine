@@ -200,14 +200,40 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function reset_probation_status($phone_number)
+	public function reset_probation_status($unique_filed, $unique_value, $update_field, $update_value)
 	{
 		#	reset the probation status of a user when they answer the redemption quiz
 		#	@params int(phone number)
 		#	@return boolean
 
 		$update_data = array(
-				"first_time_probation" => 0
+				$update_field => $update_value
+			);
+
+		$where_data = array(
+				$unique_filed => $unique_value
+			);
+
+		if($this->db->update("members", $update_data, $where_data))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+	public function update_probation_status($phone_number, $pb_status)
+	{
+		# update probation status(for first timers on probation)
+		#	@params int(phone number), int(probation status)
+		#	@return boolean
+		$pb_status += 1;
+
+		$update_data = array(
+				"first_time_probation" => $pb_status
 			);
 
 		$where_data = array(
@@ -222,7 +248,6 @@ class Quiz_model extends CI_Model
 		{
 			return false;
 		}
-
 	}
 
 

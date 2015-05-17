@@ -53,7 +53,7 @@ class Home extends CI_Controller
 
     //testers
     $phone_number = "+254725332343";
-    $succeeding_msg = "aiesec";
+    $succeeding_msg = "aw834k002";
 
 
     # check if user is registered
@@ -124,6 +124,12 @@ class Home extends CI_Controller
       {
         # user answering for the redemption island quiz
 
+        # update first_time_redemption code
+        $pb_id = $this->quiz_model->get_db_field("phone_number", $phone_number, "first_time_probation", "members");
+
+        $this->quiz_model->update_probation_status($phone_number, $pb_id);
+
+
         # check if user just got into redepmtion island
         $pb_checker = $this->quiz_model->get_db_field("phone_number", $phone_number, "first_time_probation", "members");
 
@@ -131,12 +137,13 @@ class Home extends CI_Controller
         {
           # user just got into probation
           # send user the same question
-          $prob_msg = "You've been put on probation\n\n";
-          $prob_msg .= $question;
+          $pb_question = "You are on probation!\n";
+          $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
 
-          echo $prob_msg;
+          echo "A->> ".$pb_question."<br>";
 
-          $this->send_sms($phone_number, $prob_msg, $sender);
+          # send user the message
+          $this->send_sms($phone_number, $pb_question, $sender);
         }
         else
         {
@@ -149,7 +156,9 @@ class Home extends CI_Controller
             # reset redemption status
 
             $this->quiz_model->update_probation_count($phone_number, -1);
-            $this->quiz_model->reset_probation_status($phone_number);
+            $this->quiz_model->reset_probation_status("phone_number", $phone_number, "probation_count", 0);
+            $this->quiz_model->reset_probation_status("phone_number", $phone_number, "first_time_probation", 0);
+            
 
             # send user the same question
             $prob_msg = "Probation code is correct :)\n\n";
@@ -170,13 +179,10 @@ class Home extends CI_Controller
 
             $this->send_sms($phone_number, $prob_msg, $sender);
           }
-        }
-
-        
+        } 
       }
 
       
-
       $this->send_sms($phone_number, $question, $sender);
     }
     else
