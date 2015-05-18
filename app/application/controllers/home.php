@@ -51,10 +51,7 @@ class Home extends CI_Controller
     /*$phone_number = "+25472537383";
     $succeeding_msg = "Maureen Njambi";*/
 
-    $welcome_msg = "
-    Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC
-    knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? 
-    Get your thinking cap on and let’s do this! All the luck buddy!
+    $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
     \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
     ";
 
