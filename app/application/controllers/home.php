@@ -55,8 +55,8 @@ class Home extends CI_Controller
     # @return -> sends feedback to the user
 
     //testers
-    $phone_number = "+25472537383";
-    $succeeding_msg = "Maureen Njambi";
+    /*$phone_number = "+25472537383";
+    $succeeding_msg = "Maureen Njambi";*/
 
     $welcome_msg = "
     Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC
