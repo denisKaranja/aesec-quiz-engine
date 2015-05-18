@@ -45,7 +45,7 @@ class Home extends CI_Controller
     }
 
     # tester
-    $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);	
+    #$this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);	
 	}
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
