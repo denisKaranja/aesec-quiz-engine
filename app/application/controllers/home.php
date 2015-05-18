@@ -37,15 +37,8 @@ class Home extends CI_Controller
 
     $current_date_time = date("Y-m-d H:i:s");
 
-    if ($keyword == "flit ")
-    {
-        #send the user a question
-        $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);
-      
-    }
-
     # tester
-    #$this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);	
+    $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);	
 	}
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
@@ -65,7 +58,7 @@ class Home extends CI_Controller
     \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
     ";
 
-    $reply_format = "[reply with: {flit}{space}{your answer}]";
+    $reply_format = "\n\n[reply with: {flit}{space}{your answer}]";
 
 
     # check if user is registered
