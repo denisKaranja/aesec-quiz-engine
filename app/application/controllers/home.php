@@ -3,9 +3,11 @@
 require_once('AfricasTalkingGateway.php');
 error_reporting(E_ALL);
 
+
 class Home extends CI_Controller
 {
 	private $data;
+
 
 	function __construct()
 	{
@@ -16,6 +18,7 @@ class Home extends CI_Controller
 
     # initialize quiz_model
     $this->load->model("quiz_model");
+
 	}
 
 	public function index()
@@ -52,8 +55,17 @@ class Home extends CI_Controller
     # @return -> sends feedback to the user
 
     //testers
-    $phone_number = "+254725332343";
-    $succeeding_msg = "aw834k002";
+    $phone_number = "+25472537383";
+    $succeeding_msg = "Maureen Njambi";
+
+    $welcome_msg = "
+    Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC
+    knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? 
+    Get your thinking cap on and let’s do this! All the luck buddy!
+    \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
+    ";
+
+    $reply_format = "[reply with: {flit}{space}{your answer}]";
 
 
     # check if user is registered
@@ -69,14 +81,14 @@ class Home extends CI_Controller
         # user answering for the actual quiz
 
         echo "You're already registered...<br>";
-        echo "Q-> ".$question."<br>";
+        echo "Q-> ".$question.$reply_format."<br>";
 
         $is_correct = $this->quiz_model->is_answer_correct("quiz_id", $quiz_id, $phone_number, $succeeding_msg, "answer", "quest_answer");
 
         if($is_correct)
         {
           $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "right_response", "quest_answer");
-          echo "A->> ".$response."<br>";
+          echo "A->> ".$response.$reply_format."<br>";
 
           # update quiz_count in members table
           $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
@@ -84,8 +96,8 @@ class Home extends CI_Controller
           # send next question
           $next_question = $this->quiz_model->get_question($quiz_id + 1);
 
-          echo $next_question;
-          $this->send_sms($phone_number, $next_question, $sender);
+          echo $next_question.$reply_format;
+          $this->send_sms($phone_number, $next_question.$reply_format, $sender);
         }
         else
         {
@@ -100,10 +112,10 @@ class Home extends CI_Controller
             $pb_question = "You are on probation!\n";
             $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
 
-            echo "A->> ".$pb_question."<br>";
+            echo "A->> ".$pb_question.$reply_format."<br>";
 
             # send user the message
-            $this->send_sms($phone_number, $pb_question, $sender);
+            $this->send_sms($phone_number, $pb_question.$reply_format, $sender);
           }
           else
           {
@@ -111,10 +123,10 @@ class Home extends CI_Controller
             $this->quiz_model->update_probation_count($phone_number, $pb_count);
 
              $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
-             echo "A->> ".$response."<br>";
+             echo "A->> ".$response.$reply_format."<br>";
 
              #  re-send the question failed
-             $this->send_sms($phone_number, $question, $sender);
+             $this->send_sms($phone_number, $question.$reply_format, $sender);
              echo "A->> ".$question."<br>";
           }
 
@@ -137,13 +149,13 @@ class Home extends CI_Controller
         {
           # user just got into probation
           # send user the same question
-          $pb_question = "You are on probation!\n";
+          $pb_question = "You gave 3 wrong answers. You've been put on probation. Sorry!\n\n";
           $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
 
-          echo "A->> ".$pb_question."<br>";
+          echo "A->> ".$pb_question.$reply_format."<br>";
 
           # send user the message
-          $this->send_sms($phone_number, $pb_question, $sender);
+          $this->send_sms($phone_number, $pb_question.$reply_format, $sender);
         }
         else
         {
@@ -164,9 +176,9 @@ class Home extends CI_Controller
             $prob_msg = "Probation code is correct :)\n\n";
             $prob_msg .= $question;
 
-            echo $prob_msg;
+            echo $prob_msg.$reply_format;
 
-            $this->send_sms($phone_number, $prob_msg, $sender);
+            $this->send_sms($phone_number, $prob_msg.$reply_format, $sender);
           }
           else
           {
@@ -175,9 +187,9 @@ class Home extends CI_Controller
 
             $prob_msg .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
 
-            echo $prob_msg;
+            echo $prob_msg.$reply_format;
 
-            $this->send_sms($phone_number, $prob_msg, $sender);
+            $this->send_sms($phone_number, $prob_msg.$reply_format, $sender);
           }
         } 
       }
@@ -190,10 +202,13 @@ class Home extends CI_Controller
 
       $question = $user_registered;
 
-      echo "You've been registered...<br>";
-      echo "Q-> ".$question."<br>";
+      echo $welcome_msg."<br>";
+      echo "Q-> ".$question.$reply_format."<br>";
+
+      # send welcome message to user
+      $this->send_sms($phone_number, $welcome_msg, $sender);
       # send question to user
-      $this->send_sms($phone_number, $question, $sender);
+      $this->send_sms($phone_number, $question.$reply_format, $sender);
     }
   }
 
