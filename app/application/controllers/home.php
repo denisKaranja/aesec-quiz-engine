@@ -32,13 +32,13 @@ class Home extends CI_Controller
 		$sender = $this->input->post('to');//shot code(sender)
 		$user_message = trim(strtolower($this->input->post('text')));
 
-    $keyword = substr($user_message, 0, 5);
-    $succeeding_msg = substr($user_message, 5);
+    #$keyword = substr($user_message, 0, 5);
+    #$succeeding_msg = substr($user_message, 5);
 
     $current_date_time = date("Y-m-d H:i:s");
 
     # tester
-    $this->verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender);	
+    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
 	}
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
