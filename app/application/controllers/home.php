@@ -23,7 +23,7 @@ class Home extends CI_Controller
 
 	public function index()
 	{
-		# credentials
+		/*# credentials
 		$username = "aisec";
 		$apikey = "d0c9725efd5f008756759a7abe472e0066c714d78874d6c8ea1040a31fdaa54a";
 
@@ -32,13 +32,15 @@ class Home extends CI_Controller
 		$sender = $this->input->post('to');//shot code(sender)
 		$user_message = trim(strtolower($this->input->post('text')));
 
-    #$keyword = substr($user_message, 0, 5);
-    #$succeeding_msg = substr($user_message, 5);
+    # $keyword = substr($user_message, 0, 5);
+    # $succeeding_msg = substr($user_message, 5);
 
     $current_date_time = date("Y-m-d H:i:s");
 
     # tester
-    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
+    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);*/
+
+    $this->send_sms(+254725332343, "Hello Dennis :)", 20880);	
 	}
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
@@ -48,8 +50,8 @@ class Home extends CI_Controller
     # @return -> sends feedback to the user
 
     //testers
-    /*$phone_number = "+25472537383";
-    $succeeding_msg = "Maureen Njambi";*/
+    # $phone_number = "+254720106472";
+    # echo $succeeding_msg = "ian kosen";
 
     $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
     \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
@@ -183,7 +185,6 @@ class Home extends CI_Controller
           }
         } 
       }
-
     }
     else
     {
