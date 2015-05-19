@@ -21,7 +21,11 @@ class Home extends CI_Controller
 
 	}
 
-	public function index()
+  /**
+  * @access public
+  *
+  */
+	 function index()
 	{
 		# credentials
 		$username = "aisec";
@@ -41,19 +45,23 @@ class Home extends CI_Controller
     $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
 	}
   
-  public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
+  /**
+  * @access public
+  *
+  */
+   function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
   {
 
     # @params -> gets message from the user i.e 'flit message comes here'
     # @return -> sends feedback to the user
 
     //testers
-     $phone_number = "+254725332343";
+     $phone_number = "+254725602809";
      $succeeding_msg = "afroxlds";
 
-    $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
-    \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
-    ";
+      $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
+      \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
+      ";
 
     $reply_format = "\n\n[reply with: {flit}{space}{your answer}]";
 
@@ -61,6 +69,14 @@ class Home extends CI_Controller
     # check if user is registered
     if($this->quiz_model->is_user_registered($phone_number))
     {
+      
+      if($this->quiz_model->is_inactive($phone_number))
+      {
+        # user is already disqualified. Ban them from continuing!
+        echo "User already disqualified!! Get off bro!";
+        return false;
+      }
+
       # registered user
       $quiz_id = $this->quiz_model->get_quiz_count($phone_number);
       $question = $this->quiz_model->get_question($quiz_id);
@@ -70,9 +86,6 @@ class Home extends CI_Controller
       {
         # user answering for the actual quiz
 
-        echo "You're already registered...<br>";
-        # echo "Q-> ".$question.$reply_format."<br>";
-
         if($quiz_id <= 6)
         {
           $is_correct = $this->quiz_model->is_answer_correct("quiz_id", $quiz_id, $phone_number, $succeeding_msg, "answer", "quest_answer");
@@ -80,20 +93,25 @@ class Home extends CI_Controller
           if($is_correct)
           {
             $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "right_response", "quest_answer");
+
             echo "A->> ".$response.$reply_format."<br>";
 
 
             # check if end of questions reached
             if($quiz_id == 6)
             {
+              $response = "YOU FOUND THE TREASURE!! CONGRATULATIONS YOU SUPER AIESECer!!! Proceed to the OCP to be awarded with the TREASURE! Thank you for participating in the AIESEC WEEK Treasure Hunt. To get to know more about AIESEC and our events, visit the website www.aiesecuon.or.ke.
+";
               # update aiesec_winner field
               $this->quiz_model->update_winners($phone_number);
+
+              $powered_by = "\n\nProudly powered by Africa's Talking (www.africastalking.com)";
 
               # update quiz_count in members table
              $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
 
              #  send the congratulatory message
-             $this->send_sms($phone_number, $response, $sender);
+             $this->send_sms($phone_number, $response.$powered_by, $sender);
 
              return false;
 
@@ -155,13 +173,28 @@ class Home extends CI_Controller
             }
 
 
-        }
-
-        
+        }    
       }
       else
       {
         # user answering for the redemption island quiz
+
+        $pb_wrong_code = $this->quiz_model->is_disqualified($phone_number);
+
+        if($pb_wrong_code >= 2)
+        {
+          # disqualify user
+          $disqualify_msq = "You gave the wrong probation KEY twice. Your hunt is over!";
+          echo $disqualify_msq;
+
+          # update DB to disable user
+          $this->quiz_model->disqualify_user($phone_number);
+
+
+          $this->send_sms($phone_number, $disqualify_msq, $sender);
+
+          return false;
+        }
 
         # update first_time_redemption code
         $pb_id = $this->quiz_model->get_db_field("phone_number", $phone_number, "first_time_probation", "members");
@@ -238,7 +271,11 @@ class Home extends CI_Controller
     }
   }
 
-	public function send_sms($phone_number, $question, $sender)
+  /**
+  *
+  * @access public
+  */
+	 function send_sms($phone_number, $question, $sender)
 	{
     # send question to the user using AfricasTalking API
 
@@ -266,9 +303,12 @@ class Home extends CI_Controller
     }
 	}
 
-	public function get_question()
+  /**
+  * @access public
+  */
+	 function get_winners()
 	{
-
+    
 	}
 
 

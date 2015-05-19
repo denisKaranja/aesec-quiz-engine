@@ -136,6 +136,35 @@ class Quiz_model extends CI_Model
 			$db_answer = $key->$field_name;
 		}
 
+		# question 4 two answer
+		if($quiz_count == 4)
+		{
+			if(($db_answer == $user_answer) || ("aiesecer" == $user_answer))
+			{
+				#	correct answer
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		# question 6 two answer
+		if($quiz_count == 6)
+		{
+			if(($db_answer == $user_answer) || ("afro-xlds" == $user_answer))
+			{
+				#	correct answer
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+
 		if($db_answer == $user_answer)
 		{
 			#	correct answer
@@ -298,7 +327,120 @@ class Quiz_model extends CI_Model
 	}
 
 
+	/**
+	*	@access public
+	*	@param String $phone_number
+	*	@return Int
+	*/
+	function is_disqualified($phone_number)
+	{
+		#	disqualify a user after failing redemption question twice
+
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
+
+		$this->db->select("first_time_probation");
+
+		$disqualify = $this->db->get_where("members", $where_data);
+
+		foreach($disqualify->result() as $our_key)
+		{
+			$find_out = $our_key->first_time_probation;
+		}
+
+		return $find_out;
+	}
 
 
+	/**
+	*	@access public
+	*	@param String $phone_number
+	*	@return Int
+	*/
+	function disqualify_user($phone_number)
+	{
+		#	disqualify a user
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
+
+		$update_data = array(
+				"active" => 0
+			);
+
+		if($this->db->update("members", $update_data, $where_data))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+	/**
+	*	@access public
+	*	@param String $phone_number
+	*	@return Int
+	*/
+	function is_inactive($phone_number)
+	{
+		#	checks to see if a user is disqualified
+		$where_data = array(
+				"phone_number" => $phone_number,
+				"active" => 0
+			);
+
+		$query = $this->db->get_where("members", $where_data);
+
+		if($query->num_rows() == 1)
+		{
+			return true;
+		}
+		elseif($query->num_rows() == 0)
+		{
+			return false;
+		}
+	}
+
+	/**
+	*	@access public
+	*	@param String $phone_number
+	*	@return boolean
+	*/
+	function save_winner($phone_number)
+	{
+		$insert_data = array(
+				"phone_number" => $phone_number
+			);
+
+		if($this->db->insert("winners", $where_data))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+	/**
+	*	@access public
+	*	@param String $phone_number
+	*	@return Int
+	*/
+	function get_winners()
+	{
+		$query = $this->db->get("winners", 5);
+
+		if($query)
+		{
+
+		}
+
+	}
 
 }
