@@ -25,7 +25,7 @@ class Home extends CI_Controller
 	{
 		# credentials
 		$username = "aisec";
-		$apikey = "63bea0c464119b566dbc6f93246abffdae17216ebbac2e6ef770e58f446a9cb9";
+		$apikey = "d0c9725efd5f008756759a7abe472e0066c714d78874d6c8ea1040a31fdaa54a";
 
 		#details from the user
 		$phone_number = $this->input->post('from');
@@ -208,7 +208,7 @@ class Home extends CI_Controller
 
     # credentials
     $username = "aisec";
-    $apikey = "63bea0c464119b566dbc6f93246abffdae17216ebbac2e6ef770e58f446a9cb9";
+    $apikey = "d0c9725efd5f008756759a7abe472e0066c714d78874d6c8ea1040a31fdaa54a";
 
 
     // Create a new instance of our awesome gateway class
