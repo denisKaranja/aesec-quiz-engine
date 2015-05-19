@@ -139,7 +139,7 @@ class Quiz_model extends CI_Model
 		# question 4 two answer
 		if($quiz_count == 4)
 		{
-			if(($db_answer == $user_answer) || ("aiesecer" == $user_answer))
+			if(($db_answer == $user_answer) || ("aiesecer" == $user_answer) || ("aiesecers" == $user_answer))
 			{
 				#	correct answer
 				return true;
@@ -410,13 +410,14 @@ class Quiz_model extends CI_Model
 	*	@param String $phone_number
 	*	@return boolean
 	*/
-	function save_winner($phone_number)
+	function save_winner($phone_number, $date_time)
 	{
 		$insert_data = array(
-				"phone_number" => $phone_number
+				"phone_number" => $phone_number,
+				"finish_time" => $date_time
 			);
 
-		if($this->db->insert("winners", $where_data))
+		if($this->db->insert("winners", $insert_data))
 		{
 			return true;
 		}
@@ -430,17 +431,31 @@ class Quiz_model extends CI_Model
 	/**
 	*	@access public
 	*	@param String $phone_number
-	*	@return Int
+	*	@return String
 	*/
 	function get_winners()
 	{
-		$query = $this->db->get("winners", 5);
+		$list_of_winners = '';
+
+		$this->db->select('members.name, members.phone_number');
+		$this->db->from('members');
+		$this->db->join('winners', 'winners.phone_number = members.phone_number');
+		$query = $this->db->get();
 
 		if($query)
 		{
+			foreach($query->result() as $our_winners)
+			{
+				$name = $our_winners->name;
+				$phone = $our_winners->phone_number;
 
+				$list_of_winners .= $name." -> ".$phone."\n";
+			}
+
+			
 		}
 
+		return $list_of_winners;
 	}
 
 }

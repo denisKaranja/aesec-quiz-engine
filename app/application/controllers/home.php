@@ -39,11 +39,23 @@ class Home extends CI_Controller
     # $keyword = substr($user_message, 0, 5);
     # $succeeding_msg = substr($user_message, 5);
 
+     #  testers
+     #  $phone_number = "+254725602809";
+     #  $user_message = "winners";
+
     $current_date_time = date("Y-m-d H:i:s");
 
-    # tester
+    # admin -> get winners
+    if($user_message == "winners")
+    {
+      $this->get_winners($phone_number, $sender);
+      return false;
+    }
+
+    # receive sms from users
     $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
-	}
+	 
+  }
   
   /**
   * @access public
@@ -55,15 +67,11 @@ class Home extends CI_Controller
     # @params -> gets message from the user i.e 'flit message comes here'
     # @return -> sends feedback to the user
 
-    //testers
-     $phone_number = "+254725602809";
-     $succeeding_msg = "afroxlds";
-
       $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
       \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
       ";
 
-    $reply_format = "\n\n[reply with: {flit}{space}{your answer}]";
+    $reply_format = "\n\n[reply with: <flit><space><your answer>]";
 
 
     # check if user is registered
@@ -101,9 +109,14 @@ class Home extends CI_Controller
             if($quiz_id == 6)
             {
               $response = "YOU FOUND THE TREASURE!! CONGRATULATIONS YOU SUPER AIESECer!!! Proceed to the OCP to be awarded with the TREASURE! Thank you for participating in the AIESEC WEEK Treasure Hunt. To get to know more about AIESEC and our events, visit the website www.aiesecuon.or.ke.
-";
+";    
+              echo $response;
               # update aiesec_winner field
               $this->quiz_model->update_winners($phone_number);
+
+              # save as winner
+              $this->quiz_model->save_winner($phone_number, date("Y-m-d H:i:s"));
+
 
               $powered_by = "\n\nProudly powered by Africa's Talking (www.africastalking.com)";
 
@@ -306,9 +319,14 @@ class Home extends CI_Controller
   /**
   * @access public
   */
-	 function get_winners()
+	 function get_winners($phone_number, $sender)
 	{
-    
+    $winners = $this->quiz_model->get_winners();
+
+    # send user SMS
+    $this->send_sms($phone_number, $winners, $sender);
+
+    echo $winners;
 	}
 
 
