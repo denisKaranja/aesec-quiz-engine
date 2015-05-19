@@ -250,7 +250,52 @@ class Quiz_model extends CI_Model
 		}
 	}
 
+	/**
+	* @access public
+	*/
+	function update_winners($phone_number)
+	{
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
 
+		$update_data = array(
+				"aiesec_winner" => 1
+			);
+
+		$this->db->update("members", $update_data, $where_data);
+	}
+
+
+	/**
+	*	@access public
+	*	@param String $phone_number
+	*	@return boolean
+	*/
+	function is_already_a_winner($phone_number)
+	{
+		$where_data = array(
+				"phone_number" => $phone_number
+			);
+
+		$this->db->select("aiesec_winner");
+
+		$winner = $this->db->get_where("members", $where_data);
+
+		foreach($winner->result() as $our_key)
+		{
+			$new_winner = $our_key->aiesec_winner;
+		}
+
+		if($new_winner == 1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 
 

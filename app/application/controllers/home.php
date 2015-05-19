@@ -23,7 +23,7 @@ class Home extends CI_Controller
 
 	public function index()
 	{
-		/*# credentials
+		# credentials
 		$username = "aisec";
 		$apikey = "d0c9725efd5f008756759a7abe472e0066c714d78874d6c8ea1040a31fdaa54a";
 
@@ -38,9 +38,7 @@ class Home extends CI_Controller
     $current_date_time = date("Y-m-d H:i:s");
 
     # tester
-    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);*/
-
-    $this->send_sms(+254725332343, "Hello Dennis :)", 20880);	
+    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
 	}
   
   public function verify_user_answer($phone_number, $succeeding_msg, $current_date_time, $sender)
@@ -50,8 +48,8 @@ class Home extends CI_Controller
     # @return -> sends feedback to the user
 
     //testers
-    # $phone_number = "+254720106472";
-    # echo $succeeding_msg = "ian kosen";
+     $phone_number = "+254725332343";
+     $succeeding_msg = "afroxlds";
 
     $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
     \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
@@ -68,61 +66,98 @@ class Home extends CI_Controller
       $question = $this->quiz_model->get_question($quiz_id);
       $pb_status = $this->quiz_model->get_db_field("phone_number", $phone_number, "probation_count", "members");
 
-      if($pb_status <= 2)
+      if($pb_status < 2)
       {
         # user answering for the actual quiz
 
         echo "You're already registered...<br>";
-        echo "Q-> ".$question.$reply_format."<br>";
+        # echo "Q-> ".$question.$reply_format."<br>";
 
-        $is_correct = $this->quiz_model->is_answer_correct("quiz_id", $quiz_id, $phone_number, $succeeding_msg, "answer", "quest_answer");
-
-        if($is_correct)
+        if($quiz_id <= 6)
         {
-          $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "right_response", "quest_answer");
-          echo "A->> ".$response.$reply_format."<br>";
+          $is_correct = $this->quiz_model->is_answer_correct("quiz_id", $quiz_id, $phone_number, $succeeding_msg, "answer", "quest_answer");
 
-          # update quiz_count in members table
-          $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
-
-          # send next question
-          $next_question = $this->quiz_model->get_question($quiz_id + 1);
-
-          echo $next_question.$reply_format;
-          $this->send_sms($phone_number, $next_question.$reply_format, $sender);
-        }
-        else
-        {
-          # update the probation status
-          $pb_count = $this->quiz_model->get_db_field("phone_number", $phone_number, "probation_count", "members");
-
-          if($pb_count == 3)
+          if($is_correct)
           {
-            # send user to probatio
-            # send probation question
+            $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "right_response", "quest_answer");
+            echo "A->> ".$response.$reply_format."<br>";
 
-            $pb_question = "You are on probation!\n";
-            $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
 
-            echo "A->> ".$pb_question.$reply_format."<br>";
+            # check if end of questions reached
+            if($quiz_id == 6)
+            {
+              # update aiesec_winner field
+              $this->quiz_model->update_winners($phone_number);
 
-            # send user the message
-            $this->send_sms($phone_number, $pb_question.$reply_format, $sender);
+              # update quiz_count in members table
+             $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
+
+             #  send the congratulatory message
+             $this->send_sms($phone_number, $response, $sender);
+
+             return false;
+
+            }
+
+            # update quiz_count in members table
+            $this->quiz_model->update_quiz_count($phone_number, $quiz_id);
+
+            # send next question
+            $next_question = $this->quiz_model->get_question($quiz_id + 1);
+
+            echo $next_question.$reply_format;
+            $this->send_sms($phone_number, $response.$next_question.$reply_format, $sender);
           }
           else
           {
-            # update probation count for the member
-            $this->quiz_model->update_probation_count($phone_number, $pb_count);
+            # update the probation status
+            $pb_count = $this->quiz_model->get_db_field("phone_number", $phone_number, "probation_count", "members");
 
-             $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
-             echo "A->> ".$response.$reply_format."<br>";
+            if($pb_count == 2)
+            {
+              # send user to probatio
+              # send probation question
 
-             #  re-send the question failed
-             $this->send_sms($phone_number, $question.$reply_format, $sender);
-             echo "A->> ".$question."<br>";
+              $pb_question = "You are on probation!\n";
+              $pb_question .= $this->quiz_model->get_db_field("quiz_id", $quiz_id, "probation_quiz", "quest_answer");
+
+              echo "A->> ".$pb_question.$reply_format."<br>";
+
+              # send user the message
+              $this->send_sms($phone_number, $pb_question.$reply_format, $sender);
+            }
+            else
+            {
+              # update probation count for the member
+              $this->quiz_model->update_probation_count($phone_number, $pb_count);
+
+               $response = $this->quiz_model->get_db_field("quiz_id", $quiz_id, "wrong_response", "quest_answer");
+               echo "A->> ".$response.$reply_format."<br>";
+
+               #  re-send the question failed
+               $this->send_sms($phone_number, $question.$reply_format, $sender);
+               echo "A->> ".$question."<br>";
+            }
+
           }
+        }
+        else
+        {
+            # Winner
+
+            $response = $this->quiz_model->get_db_field("quiz_id", ($quiz_id - 1), "right_response", "quest_answer"); 
+
+            $already_winner = $this->quiz_model->is_already_a_winner($phone_number);
+
+            if($already_winner)
+            {
+              return true;
+            }
+
 
         }
+
+        
       }
       else
       {
