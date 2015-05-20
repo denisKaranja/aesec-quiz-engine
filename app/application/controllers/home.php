@@ -53,7 +53,7 @@ class Home extends CI_Controller
     }
 
     # receive sms from users
-    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
+    # $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
 	 
   }
   
