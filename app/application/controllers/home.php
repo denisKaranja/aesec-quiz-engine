@@ -321,7 +321,7 @@ class Home extends CI_Controller
   */
 	 function get_winners($phone_number, $sender)
 	{
-    $winners_msg = "WINNERS LIST!\n=============="
+    $winners_msg = "WINNERS LIST!\n==============";
     $winners = $this->quiz_model->get_winners();
 
     # send user SMS
