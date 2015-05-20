@@ -68,10 +68,10 @@ class Home extends CI_Controller
     # @return -> sends feedback to the user
 
       $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
-      \n\nProudly powered by Africa's Talking(www.africastalking.com)\n\n   
+      \n\nProudly powered by Africa's Talking(www.africastalking.com)\n   
       ";
 
-    $reply_format = "\n\n[reply with: <flit><space><your answer>]";
+    $reply_format = "\n\nreply with: <flit><space><your answer>";
 
 
     # check if user is registered
@@ -166,7 +166,7 @@ class Home extends CI_Controller
                echo "A->> ".$response.$reply_format."<br>";
 
                #  re-send the question failed
-               $this->send_sms($phone_number, $question.$reply_format, $sender);
+               $this->send_sms($phone_number, $response.$question.$reply_format, $sender);
                echo "A->> ".$question."<br>";
             }
 
@@ -321,6 +321,7 @@ class Home extends CI_Controller
   */
 	 function get_winners($phone_number, $sender)
 	{
+    $winners_msg = "WINNERS LIST!\n=============="
     $winners = $this->quiz_model->get_winners();
 
     # send user SMS
