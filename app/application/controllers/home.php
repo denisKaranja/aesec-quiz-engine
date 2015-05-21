@@ -320,6 +320,7 @@ Thank you for participating in the AIESEC WEEK Treasure Hunt. To get to know mor
 
   /**
   * @access public
+  * @param String $phone_number, String $sender
   */
 	 function get_winners($phone_number, $sender)
 	{
