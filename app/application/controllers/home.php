@@ -108,7 +108,9 @@ class Home extends CI_Controller
             # check if end of questions reached
             if($quiz_id == 6)
             {
-              $response = "YOU FOUND THE TREASURE!! CONGRATULATIONS YOU SUPER AIESECer!!! Proceed to the OCP to be awarded with the TREASURE! Thank you for participating in the AIESEC WEEK Treasure Hunt. To get to know more about AIESEC and our events, visit the website www.aiesecuon.or.ke.
+              $response = "Congratulations on completing the treasure hunt. You are truly brilliant!!
+Thank you for participating in the AIESEC WEEK Treasure Hunt. To get to know more about AIESEC and our events, visit the website www.aiesecuon.or.ke.
+
 ";
               echo $response;
               # update aiesec_winner field
