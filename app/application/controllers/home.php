@@ -53,10 +53,10 @@ class Home extends CI_Controller
     }
 
     # receive sms from users
-    # $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);	
-	 
+    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);
+
   }
-  
+
   /**
   * @access public
   *
@@ -68,7 +68,7 @@ class Home extends CI_Controller
     # @return -> sends feedback to the user
 
       $welcome_msg = "Welcome to the University of Nairobi’s AIESEC WEEK Treasure Hunt. We want to challenge the AIESEC knowledge you have acquired over the week and over the years, if you are an AIESECer! Are you ready? Get your thinking cap on and let’s do this! All the luck buddy!
-      \n\nProudly powered by Africa's Talking(www.africastalking.com)\n   
+      \n\nProudly powered by Africa's Talking(www.africastalking.com)\n
       ";
 
     $reply_format = "\n\nreply with: <flit><space><your answer>";
@@ -77,7 +77,7 @@ class Home extends CI_Controller
     # check if user is registered
     if($this->quiz_model->is_user_registered($phone_number))
     {
-      
+
       if($this->quiz_model->is_inactive($phone_number))
       {
         # user is already disqualified. Ban them from continuing!
@@ -109,7 +109,7 @@ class Home extends CI_Controller
             if($quiz_id == 6)
             {
               $response = "YOU FOUND THE TREASURE!! CONGRATULATIONS YOU SUPER AIESECer!!! Proceed to the OCP to be awarded with the TREASURE! Thank you for participating in the AIESEC WEEK Treasure Hunt. To get to know more about AIESEC and our events, visit the website www.aiesecuon.or.ke.
-";    
+";
               echo $response;
               # update aiesec_winner field
               $this->quiz_model->update_winners($phone_number);
@@ -176,7 +176,7 @@ class Home extends CI_Controller
         {
             # Winner
 
-            $response = $this->quiz_model->get_db_field("quiz_id", ($quiz_id - 1), "right_response", "quest_answer"); 
+            $response = $this->quiz_model->get_db_field("quiz_id", ($quiz_id - 1), "right_response", "quest_answer");
 
             $already_winner = $this->quiz_model->is_already_a_winner($phone_number);
 
@@ -186,7 +186,7 @@ class Home extends CI_Controller
             }
 
 
-        }    
+        }
       }
       else
       {
@@ -264,7 +264,7 @@ class Home extends CI_Controller
 
             $this->send_sms($phone_number, $prob_msg.$reply_format, $sender);
           }
-        } 
+        }
       }
     }
     else
@@ -301,14 +301,14 @@ class Home extends CI_Controller
     $gateway = new AfricasTalkingGateway($username, $apikey);
     // Any gateway errors will be captured by our custom Exception class below,
     // so wrap the call in a try-catch block
-    
+
     try
     {
       // Thats it, hit send and we'll take care of the rest.
-      
+
 
       $results = $gateway->sendMessage($phone_number, $question, $sender);
-        
+
     }
     catch ( AfricasTalkingGatewayException $e )
     {
