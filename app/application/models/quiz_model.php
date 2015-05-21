@@ -2,13 +2,14 @@
 
 class Quiz_model extends CI_Model
 {
-	public function is_user_registered($phone_number)
-	{
-		# check if user is registered
-		#	@params ->int(phone_number)
-		#	@return boolean
-		#
 
+	/**
+	*	@access public
+	*	@param String $phone_numer
+	*	@return Boolean
+	*/
+	 function is_user_registered($phone_number)
+	{
 		$where_data = array(
 				"phone_number" => $phone_number
 			);
@@ -26,7 +27,12 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function register_user($phone_number, $name, $time)
+	/**
+	*	@access public
+	*	@param String $phone_number, String $name, String $time
+	*	@return String question
+	*/
+	 function register_user($phone_number, $name, $time)
 	{
 		#	register a user to the quiz game
 		#	@params int(phone number), name(string)
@@ -61,12 +67,14 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function get_question($quiz_number)
+	/**
+	*	@access public
+	*	@param Integer $quiz_number
+	*	@return String question
+	*/
+	 function get_question($quiz_number)
 	{
 		#	get the question after user registration
-		#	@params int(quiz_id)
-		#	@return string(question)
-
 		$where_data = array(
 				"quiz_id" => $quiz_number
 			);
@@ -80,12 +88,14 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function get_quiz_count($phone_number)
+	/**
+	*	@access public
+	*	@param String $phone_number
+	*	@return Integer $quiz_id
+	*/
+	 function get_quiz_count($phone_number)
 	{
 		#	get quiz_cout for the member
-		#	@params int(phone numeber)
-		#	@return int(quiz id)
-
 		$where_data = array(
 				"phone_number" => $phone_number
 			);
@@ -101,7 +111,12 @@ class Quiz_model extends CI_Model
 		return $quiz_id;
 	}
 
-	public function get_db_field($unique_field, $unique_value, $field_name, $table_name)
+	/**
+	*	@access public
+	*	@param String $unique_field, Integer $unique_value, String $field_name, String $table_name
+	*	@return String, Integer
+	*/
+	 function get_db_field($unique_field, $unique_value, $field_name, $table_name)
 	{
 		$where_data = array(
 				$unique_field => $unique_value
@@ -118,12 +133,14 @@ class Quiz_model extends CI_Model
 		return $results;
 	}
 
-	public function is_answer_correct($unique_filed, $quiz_count, $phone_number, $user_answer, $field_name, $table)
+	/**
+	*	@access public
+	*	@return Boolean
+	*
+	*/
+	 function is_answer_correct($unique_filed, $quiz_count, $phone_number, $user_answer, $field_name, $table)
 	{
 		# check if user answer is correct
-		# @params int(quiz number), int(phone number), string(answer)
-		#	@return 
-
 		$where_data = array(
 				$unique_filed => $quiz_count
 			);
@@ -176,7 +193,12 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function update_quiz_count($phone_number, $quiz_count)
+	/**
+	*	@access public
+	*	@param String $phone_number, Integer $quiz_count
+	*	@return Boolean
+	*/
+	 function update_quiz_count($phone_number, $quiz_count)
 	{
 		#	update quiz count and increment the present value by 1
 		# @params string(phone number), int(quiz id)
@@ -204,11 +226,14 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function update_probation_count($phone_number, $pb_count)
+	/**
+	*	@access public
+	*	@param String $phone_number, Integer $pb_count
+	*	@return Boolean
+	*/
+	 function update_probation_count($phone_number, $pb_count)
 	{
 		#	update probation status when the user submits the wrong answer
-		#	@params int(phone number)
-		# @return boolean
 		$pb_count += 1;
 
 		$where_data = array(
@@ -229,12 +254,14 @@ class Quiz_model extends CI_Model
 		}
 	}
 
-	public function reset_probation_status($unique_filed, $unique_value, $update_field, $update_value)
+	/**
+	*	@access public
+	*	@return Boolean
+	*
+	*/
+	 function reset_probation_status($unique_filed, $unique_value, $update_field, $update_value)
 	{
 		#	reset the probation status of a user when they answer the redemption quiz
-		#	@params int(phone number)
-		#	@return boolean
-
 		$update_data = array(
 				$update_field => $update_value
 			);
@@ -254,11 +281,14 @@ class Quiz_model extends CI_Model
 
 	}
 
-	public function update_probation_status($phone_number, $pb_status)
+	/**
+	*	@access public
+	*	@param String $phone_number, Integer $pb_status
+	*	@return Boolean
+	*/
+	 function update_probation_status($phone_number, $pb_status)
 	{
 		# update probation status(for first timers on probation)
-		#	@params int(phone number), int(probation status)
-		#	@return boolean
 		$pb_status += 1;
 
 		$update_data = array(
@@ -377,7 +407,6 @@ class Quiz_model extends CI_Model
 		{
 			return false;
 		}
-
 	}
 
 	/**
@@ -452,7 +481,7 @@ class Quiz_model extends CI_Model
 				$list_of_winners .= $name." -> ".$phone."\n";
 			}
 
-			
+
 		}
 
 		return $list_of_winners;
