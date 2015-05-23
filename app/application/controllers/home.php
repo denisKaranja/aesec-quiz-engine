@@ -48,12 +48,12 @@ class Home extends CI_Controller
     # admin -> get winners
     if($user_message == "winners")
     {
-      $this->get_winners($phone_number, $sender);
+      #$this->get_winners($phone_number, $sender);
       return false;
     }
 
     # receive sms from users
-    $this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);
+    #$this->verify_user_answer($phone_number, $user_message, $current_date_time, $sender);
 
   }
 
